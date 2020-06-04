@@ -27,7 +27,9 @@ export default async function startAPIDevProcess(
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const applicationTsConfig = (await loadJsonFile(tsConfigPath)) as any;
+    const applicationTsConfig = (await loadJsonFile(
+      applicationTsConfigPath,
+    )) as any;
     if (applicationTsConfig == null) {
       throw new Error('Failed to load tsconfig.json');
     }
