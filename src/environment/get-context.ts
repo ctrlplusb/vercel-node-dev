@@ -11,7 +11,6 @@ import * as lib from '../lib';
 export interface Context {
   debugApis: boolean;
   debugApisPort: number;
-  customDevCommand?: string;
   env: { [key: string]: string };
   targetRootDir: string;
   framework?: Framework;
@@ -66,7 +65,6 @@ export default async function getContext(): Promise<Context> {
     debugApisPort: process.env.VND_DEBUG_APIS_PORT
       ? parseInt(process.env.VND_DEBUG_APIS_PORT)
       : 9292,
-    customDevCommand: process.env.VND_CUSTOM_DEV_COMMAND,
     env: getEnv(targetRootDir),
     targetRootDir,
     packageJson: fs.existsSync(packageJsonPath)

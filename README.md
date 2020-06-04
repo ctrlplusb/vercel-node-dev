@@ -31,6 +31,7 @@ Fast reloads, improved reliability, offline and debugger support.
 - [Supported Frameworks](#supported-frameworks)
 - [Limitations](#limitations)
 - [CLI Options](#cli-options)
+- [Specifying a custom develop command](#specifying-a-custom-develop-command)
 - [Debugging your Lambdas](#debugging-your-lambdas)
 - [Bonus: Unit Testing your Lambdas](#bonus-unit-testing-your-lambdas)
 
@@ -200,15 +201,21 @@ The CLI current supports the following options.
 
   Allows you to specify the port at which the `vercel-node-dev` server will run. By default it will attempt to bind to port `3000`.
 
-- `--dev-command [string]` | `-c [string]`
+<p>&nbsp;</p>
 
-  Allows you to specify a custom dev command to execute for you UI development. Please ensure that you pass along the `PORT` environment variable that will be provided to it, so that the `vercel-node-dev` server can manage the process correctly.
+## Specifying a custom develop command
 
-  ```bash
-  vercel-node-dev --dev-command "some-ui-dev-tool -p \$PORT"
-  ```
+If you aren't using one of the [supported frameworkd](#supported-frameworks), or if you would like to customise the develop command, then you can add a `dev` script to your `package.json`:
 
-  Typically you would configure this command via your [project settings](https://vercel.com/docs/v2/platform/projects) for the [project configuration](https://vercel.com/docs/v2/platform/projects) on Vercel, however, we wish to support offline dev so have opted for explicit specification. If you switch back to the `vercel dev` command you would need to copy this value to the appropriate [project settings](https://vercel.com/docs/v2/platform/projects).
+```json
+{
+  "scripts": {
+    "dev": "my-dev-tool -p $PORT"
+  }
+}
+```
+
+**Note:** It is important that you pass through the `$PORT` environment variable as shown in the example above. This is so that your development server can be correctly managed by `vercel-node-dev`.
 
 <p>&nbsp;</p>
 

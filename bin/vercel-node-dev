@@ -40,11 +40,6 @@ const cli = meow(
         isRequired: false,
         type: 'number',
       },
-      devCommand: {
-        alias: 'c',
-        isRequired: false,
-        type: 'string',
-      },
       port: {
         alias: 'p',
         default: 3000,
@@ -72,7 +67,6 @@ const childProcess = execa(
       FORCE_COLOR: '1',
       VND_DEBUG_APIS: cli.flags.debugApis ? '1' : undefined,
       VND_DEBUG_APIS_PORT: cli.flags.debugApisPort,
-      VND_DEV_COMMAND: cli.flags.devCommand,
       VND_PORT: cli.flags.port,
       VND_TARGET: process.cwd(),
     },

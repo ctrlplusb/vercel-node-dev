@@ -9,13 +9,14 @@ export default function startUIDevProcess(
   ports: Ports,
 ): { childProcess: execa.ExecaChildProcess } {
   // Resolve the development command
-  const devCommand = context.customDevCommand || context.framework?.devCommand;
+  const devCommand =
+    context.packageJson?.scripts?.dev || context.framework?.devCommand;
   if (devCommand == null) {
     throw new Error(
-      "[vercel-node-dev] No dev command could be resolved for your project's UI. Please specify one via the --dev-command option.",
+      '[vercel-node-dev] No develop command could be resolved for your project. Please specify one via the "dev" script.',
     );
   }
-  lib.debug('Using UI dev command:', devCommand);
+  lib.debug('Using dev command:', devCommand);
 
   // We need to run our dev command through this util so that any locally
   // installed binaries referenced by the devCommand will be resolved
@@ -25,17 +26,20 @@ export default function startUIDevProcess(
   );
 
   // Run the UI script
-  const childProcess = execa.command(`${npmRunPath} ${devCommand}`, {
-    cwd: context.targetRootDir,
-    env: {
-      ...context.env,
-      PORT: ports.uiServer.toString(),
-      SKIP_PREFLIGHT_CHECK: 'true',
-      BROWSER: 'none',
-      FORCE_COLOR: 'true',
+  const childProcess = execa.command(
+    `${npmRunPath} ${devCommand.replace('$PORT', ports.uiServer.toString())}`,
+    {
+      cwd: context.targetRootDir,
+      env: {
+        ...context.env,
+        PORT: ports.uiServer.toString(),
+        SKIP_PREFLIGHT_CHECK: 'true',
+        BROWSER: 'none',
+        FORCE_COLOR: 'true',
+      },
+      extendEnv: true,
     },
-    extendEnv: true,
-  });
+  );
 
   childProcess.catch((err) => {
     lib.log('Failed to run develop command for UI');
