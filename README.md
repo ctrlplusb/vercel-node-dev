@@ -126,6 +126,13 @@ We follows the design, API, and features of the official [Node.js runtime](https
 
 The [official docs](https://vercel.com/docs/runtimes#official-runtimes/node-js) and [advanced usage docs](https://vercel.com/docs/runtimes#advanced-usage/advanced-node-js-usage) should be used as your reference for understanding the above features in detail.
 
+**Todo**
+
+The following configuration options will be supported in the near future:
+
+- [cleanUrls](https://vercel.com/docs/configuration#project/cleanurls)
+- [trailingSlash](https://vercel.com/docs/configuration#project/trailingslash)
+
 <p>&nbsp;</p>
 
 ## Supported Frameworks
@@ -134,7 +141,7 @@ I have tested the CLI against the following frameworks, utilising the ["Zero Con
 
 - [x] Create React App
 - [x] Create React App + TypeScript
-- [ ] Gatsby
+- [x] Gatsby
 - [ ] Vue.js
 - [ ] Svelte
 - [ ] Angular
@@ -160,8 +167,6 @@ Below is a list of the Vercel features that this CLI does not support. These lim
 - Support for any of the following [`vercel.json` configuration](https://vercel.com/docs/configuration#introduction) options:
 
   - [headers](https://vercel.com/docs/configuration#project/headers)
-  - [cleanUrls](https://vercel.com/docs/configuration#project/cleanurls)
-  - [trailingSlash](https://vercel.com/docs/configuration#project/trailingslash)
   - [redirects](https://vercel.com/docs/configuration#project/redirects)
   - [rewrites](https://vercel.com/docs/configuration#project/rewrites)
 
