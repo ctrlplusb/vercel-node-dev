@@ -189,9 +189,23 @@ The CLI current supports the following options.
 
   Setting this flag will enable the debugger against your lambdas.
 
-- `--debug-apis-port [number]` | `-p [number]`
+- `--debug-apis-port [number]` | `-o [number]`
 
   Allows you to specify the port at which the debugger for your lambdas will run. By default it runs on port `9229`.
+
+- `--port [number]` | `-p [number]`
+
+  Allows you to specify the port at which the `vercel-node-dev` server will run. By default it will attempt to bind to port `3000`.
+
+- `--dev-command [string]` | `-c [string]`
+
+  Allows you to specify a custom dev command to execute for you UI development. Please ensure that you pass along the `PORT` environment variable that will be provided to it, so that the `vercel-node-dev` server can manage the process correctly.
+
+  ```bash
+  vercel-node-dev --dev-command "some-ui-dev-tool -p \$PORT"
+  ```
+
+  Typically you would configure this command via your [project settings](https://vercel.com/docs/v2/platform/projects) for the [project configuration](https://vercel.com/docs/v2/platform/projects) on Vercel, however, we wish to support offline dev so have opted for explicit specification. If you switch back to the `vercel dev` command you would need to copy this value to the appropriate [project settings](https://vercel.com/docs/v2/platform/projects).
 
 <p>&nbsp;</p>
 
