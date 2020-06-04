@@ -1,0 +1,93 @@
+#!/usr/bin/env node
+'use strict';
+
+/* eslint-disable @typescript-eslint/no-var-requires */
+
+const meow = require('meow');
+const execa = require('execa');
+const path = require('path');
+
+const cli = meow(
+  `
+  Usage
+    $ vercel-node-dev
+
+  Options
+    --debug-apis      -d           | Attach a Node.js inspect debugger instance to the APIs
+    --debug-apis-port -o [number]  | Specify the debug port number for API debugger. Default=9229
+    --dev-command     -c [string]  | Specify a custom develop command to execute for UI.
+    --port            -p [number]  | Specify the port for vercel-node-dev server. Default=3000
+
+  Examples
+    $ vercel-node-dev --debug-apis
+    $ vercel-node-dev -d
+    $ vercel-node-dev --debug-apis --debug-apis-port 8989
+    $ vercel-node-dev -d -o 8989
+    $ vercel-node-dev -p 1337
+    $ vercel-node-dev -c "react-app-rewired start"
+`,
+  {
+    flags: {
+      debugApis: {
+        alias: 'd',
+        default: false,
+        isRequired: false,
+        type: 'boolean',
+      },
+      debugApisPort: {
+        alias: 'o',
+        default: 9229,
+        isRequired: false,
+        type: 'number',
+      },
+      devCommand: {
+        alias: 'c',
+        isRequired: false,
+        type: 'string',
+      },
+      port: {
+        alias: 'p',
+        default: 3000,
+        isRequired: false,
+        type: 'number',
+      },
+    },
+  },
+);
+
+const childProcess = execa(
+  path.join(
+    path.dirname(require.resolve('ts-node/package.json')),
+    'dist/bin.js',
+  ),
+  [
+    '--project',
+    path.resolve(__dirname, '../tsconfig.json'),
+    '--transpile-only',
+    path.resolve(__dirname, '../src'),
+  ],
+  {
+    cwd: path.resolve(__dirname, '../'),
+    env: {
+      FORCE_COLOR: '1',
+      VND_DEBUG_APIS: cli.flags.debugApis ? '1' : undefined,
+      VND_DEBUG_APIS_PORT: cli.flags.debugApisPort,
+      VND_DEV_COMMAND: cli.flags.devCommand,
+      VND_PORT: cli.flags.port,
+      VND_TARGET: process.cwd(),
+    },
+    stdio: 'inherit',
+  },
+);
+
+childProcess.catch((err) => {
+  console.error(err);
+});
+
+const dispose = (signal) => {
+  if (childProcess) {
+    childProcess.kill(signal);
+  }
+};
+process.on('SIGINT', dispose);
+process.on('SIGTERM', dispose);

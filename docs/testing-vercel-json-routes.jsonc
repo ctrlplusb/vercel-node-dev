@@ -1,0 +1,29 @@
+{
+  "version": 2,
+  "routes": [
+    // 🔥 DOES NOT WORK!
+    // 🐛 THE DOCS CLAIM THIS SHOULD RESTRICT THE FUNCTION TO ONLY RECEIVE
+    //    GET OR POST REQUESTS
+    {
+      "src": "/api/articles/restricted.js",
+      "methods": ["POST", "GET"],
+      "dest": "/api/articles/restricted.js"
+    },
+    // 🔥 DOES NOT WORK!
+    { "src": "/article-api-no-ext", "dest": "/api/articles/12345" },
+    // 🔥 DOES NOT WORK!
+    { "src": "/article-api-ext", "dest": "/api/articles/12345.js" },
+    // ✅ WORKS. "id" is undefined
+    { "src": "/article-api", "dest": "/api/articles/[id].js" },
+    // ✅ WORKS
+    { "src": "/root-api-no-leading", "dest": "api/index.js" },
+    // 🔥 DOES NOT WORK
+    { "src": "no-leading-root-api", "dest": "/api/index.js" },
+    // 🔥 DOES NOT WORK
+    { "src": "/bob-no-ext", "dest": "/foo" },
+    // ✅ WORKS
+    { "src": "/bob-no-leading", "dest": "foo.html" },
+    // 🔥 DOES NOT WORK!
+    { "src": "no-leading-bob", "dest": "/foo.html" }
+  ]
+}

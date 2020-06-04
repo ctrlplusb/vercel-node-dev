@@ -1,0 +1,119 @@
+{
+  "version": 2,
+  "routes": [
+    {
+      "src": "/simple-route-to-dest",
+      "dest": "/api/hello-world"
+    },
+    {
+      "src": "/query-strings-with-continue-stack",
+      "dest": "/query-strings-stack?internalContinued=true",
+      "continue": true
+    },
+    {
+      "src": "/query-strings-stack",
+      "dest": "/api/query-strings?internal=bar"
+    },
+    {
+      "src": "/redirect-301",
+      "status": 301,
+      "headers": { "Location": "https://google.com" }
+    },
+    {
+      "src": "/redirect-302",
+      "status": 302,
+      "headers": { "Location": "https://google.com" }
+    },
+    {
+      "src": "/redirect-303",
+      "status": 303,
+      "headers": { "Location": "https://google.com" }
+    },
+    {
+      "src": "/redirect-307",
+      "status": 307,
+      "headers": { "Location": "https://google.com" }
+    },
+    {
+      "src": "/redirect-308",
+      "status": 308,
+      "headers": { "Location": "https://google.com" }
+    },
+    {
+      "src": "/redirect-with-group-in-location-header/(.*)",
+      "status": 301,
+      "headers": { "Location": "/api/articles/$1" }
+    },
+    {
+      "src": "/redirect-with-dest_the-dest-is-ignored",
+      "status": 301,
+      "headers": { "Location": "https://google.com" },
+      "dest": "/api/hello-world"
+    },
+    {
+      "src": "/headers-with-numbered-groups/([^/]*)/([^/]*)",
+      "headers": {
+        "X-MY-CUSTOM-HEADER-01": "foo-$1-$2",
+        "X-MY-CUSTOM-HEADER-02": "foo-$1",
+        "X-MY-CUSTOM-HEADER-03": "foo-$2"
+      },
+      "dest": "/api/hello-world"
+    },
+    {
+      "src": "/headers-with-named-groups-do-not-work/(?<first>[^/]*)/(?<second>[^/]*)",
+      "headers": {
+        "X-MY-CUSTOM-HEADER-01": "foo-:first-:second",
+        "X-MY-CUSTOM-HEADER-02": "foo-:first",
+        "X-MY-CUSTOM-HEADER-03": "foo-:second"
+      },
+      "dest": "/api/hello-world"
+    },
+    {
+      "src": "/numbered-groups/([^/]+)/([^/]+)",
+      "dest": "/api/query-strings?first=$1&second=$2"
+    },
+    {
+      "src": "/named-groups/(?<first>[^/]+)/(?<second>[^/]+)",
+      "dest": "/api/query-strings?first=:first&second=:second"
+    },
+    {
+      "src": "/restricted-to-post",
+      "methods": ["POST"],
+      "dest": "/api/method"
+    },
+    {
+      "src": "/api/articles/restricted\\.js",
+      "methods": ["POST", "GET"],
+      "dest": "/api/articles/restricted.js"
+    },
+    {
+      "src": "/foo.html"
+    },
+    {
+      "src": "/articles/(.*)",
+      "headers": { "Z_MY_CUSTOM_HEADER": "article" },
+      "continue": true
+    },
+    { "src": "/articles", "methods": ["POST"], "dest": "/api/articles" },
+    {
+      "src": "/api/articles/restricted.js",
+      "methods": ["POST", "GET"],
+      "dest": "/api/articles/restricted.js"
+    },
+    { "src": "/legacy", "status": 404 },
+
+    { "src": "/article-api-no-ext", "dest": "/api/articles/12345" },
+    { "src": "/article-api-ext", "dest": "/api/articles/12345.js" },
+    { "src": "/article-api", "dest": "/api/articles/[id].js" },
+
+    { "src": "/root-api-no-ext", "dest": "/api/index" },
+    { "src": "/root-api-simple", "dest": "/api" },
+    { "src": "/root-api", "dest": "/api/index.js" },
+    { "src": "/root-api-no-leading", "dest": "api/index.js" },
+    { "src": "no-leading-root-api", "dest": "/api/index.js" },
+    { "src": "/bob-no-ext", "dest": "/foo" },
+    { "src": "/bob", "dest": "/foo.html" },
+    { "src": "/bob-no-leading", "dest": "foo.html" },
+    { "src": "no-leading-bob", "dest": "/foo.html" }
+  ]
+}
