@@ -1,6 +1,6 @@
 {
   "name": "vercel-node-dev",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "An unofficial development CLI for Vercel applications targeting the Node.js runtime.",
   "license": "MIT",
   "author": "Sean Matheson",
