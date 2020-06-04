@@ -122,7 +122,7 @@ const resolveRoutes = async (context: Context): Promise<Route[]> => {
       lib.log(`Failed to load function "${p}"`, err);
 
       handler = (_req, res) => {
-        res.send(dedent`
+        res.status(500).send(dedent`
         There is an error in the following function:
             - ${p}
         Error:
