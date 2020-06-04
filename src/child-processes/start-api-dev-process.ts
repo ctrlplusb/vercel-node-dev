@@ -6,6 +6,7 @@ import tempy from 'tempy';
 import writeJsonFile from 'write-json-file';
 import { Context } from '../environment/get-context';
 import { Ports } from '../ports';
+import * as lib from '../lib';
 
 export default async function startAPIDevProcess(
   context: Context,
@@ -47,6 +48,8 @@ export default async function startAPIDevProcess(
     tsConfigPath = tempy.file();
 
     await writeJsonFile(tsConfigPath, tsConfig);
+
+    lib.debug('Using custom tsconfig', tsConfig);
   }
 
   // Start the api-server via ts-node-dev in order to support auto reloading
