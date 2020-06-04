@@ -133,7 +133,6 @@ I have tested the CLI against the following frameworks, utilising the ["Zero Con
 
 - [x] Create React App
 - [x] Create React App + TypeScript
-- [ ] Next.js - yes, but only with lambas in `/apis` and not in `/pages/api`. If you want to use the `/pages/api` directory then you will need to run the `next dev` command instead.
 - [ ] Gatsby
 - [ ] Vue.js
 - [ ] Svelte
@@ -178,6 +177,10 @@ Below is a list of the Vercel features that this CLI does not support. These lim
 - Support for [disabling the Node.js helpers](https://vercel.com/docs/runtimes#advanced-usage/advanced-node-js-usage/disabling-helpers-for-node-js)
 
   > This has more of an impact on production environments, where you would want to hyper optimise lambda performance in some cases.
+
+- Support for [Next.js](https://nextjs.org/) projects.
+
+  > Next has it's own development server with bespoke features around the APIs and pages. I would recommend using the `next dev` command instead.
 
 <p>&nbsp;</p>
 
