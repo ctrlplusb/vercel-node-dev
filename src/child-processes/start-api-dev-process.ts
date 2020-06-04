@@ -1,5 +1,9 @@
 import path from 'path';
 import execa from 'execa';
+import fs from 'fs';
+import loadJsonFile from 'load-json-file';
+import tempy from 'tempy';
+import writeJsonFile from 'write-json-file';
 import { Context } from '../environment/get-context';
 import { Ports } from '../ports';
 
@@ -7,9 +11,8 @@ export default async function startAPIDevProcess(
   context: Context,
   ports: Ports,
 ): Promise<{ childProcess: execa.ExecaChildProcess }> {
-  const tsConfigPath = path.resolve(__dirname, './tsconfig.json');
+  let tsConfigPath = path.resolve(__dirname, './tsconfig.json');
 
-  /*
   // If the application has a tsconfig, we'll extend it
   const applicationTsConfigPath = path.join(
     context.targetRootDir,
@@ -22,13 +25,29 @@ export default async function startAPIDevProcess(
       throw new Error('Failed to load tsconfig.json');
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const applicationTsConfig = (await loadJsonFile(tsConfigPath)) as any;
+    if (applicationTsConfig == null) {
+      throw new Error('Failed to load tsconfig.json');
+    }
+
+    if (Array.isArray(applicationTsConfig.compilerOptions?.lib)) {
+      tsConfig.compilerOptions.lib = applicationTsConfig.compilerOptions.lib;
+      if (
+        tsConfig.compilerOptions.lib.find(
+          (x) => x.match(/^esnext$/i) != null,
+        ) == null
+      ) {
+        tsConfig.compilerOptions.lib.push('ESNext');
+      }
+    }
+
     tsConfig.extends = applicationTsConfigPath;
 
     tsConfigPath = tempy.file();
 
     await writeJsonFile(tsConfigPath, tsConfig);
   }
-  */
 
   // Start the api-server via ts-node-dev in order to support auto reloading
   // on any code changes to the APIs
