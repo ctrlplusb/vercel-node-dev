@@ -142,7 +142,7 @@ I have tested the CLI against the following frameworks, utilising the ["Zero Con
 - [x] Create React App
 - [x] Create React App + TypeScript
 - [x] Gatsby
-- [ ] Vue.js
+- [x] Vue.js
 - [ ] Svelte
 - [ ] Angular
 - [ ] Ember.js
@@ -208,7 +208,7 @@ The CLI current supports the following options.
 
 <p>&nbsp;</p>
 
-## Specifying a custom develop command
+## Specifying a custom develop command
 
 If you aren't using one of the [supported frameworkd](#supported-frameworks), or if you would like to customise the develop command, then you can add a `dev` script to your `package.json`:
 
