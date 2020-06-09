@@ -75,6 +75,7 @@ const cli = meow(
       '-r',
       'ts-node/register',
       '--preserve-symlinks',
+      '--preserve-symlinks-main',
       path.resolve(__dirname, '../src'),
     ],
     {

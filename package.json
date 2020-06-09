@@ -45,7 +45,7 @@
     "tempy": "^0.5.0",
     "ts-node-dev": "^1.0.0-pre.44",
     "typescript": "^3.9.5",
-    "vercel-node-server": "^2.3.0-alpha.0",
+    "vercel-node-server": "^2.2.1",
     "wait-port": "^0.2.9",
     "write-json-file": "^4.3.0"
   },

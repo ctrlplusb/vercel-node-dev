@@ -16,7 +16,7 @@ async function createTSConfig({
     allowJs: false,
     allowSyntheticDefaultImports: true,
     alwaysStrict: false,
-    baseUrl: './',
+    baseUrl: '.',
     emitDecoratorMetadata: true,
     esModuleInterop: true,
     experimentalDecorators: true,
@@ -29,7 +29,14 @@ async function createTSConfig({
     noEmit: true,
     noImplicitAny: false,
     noImplicitThis: false,
+    // Don't actually think we need these anymore, but leaving for now:
     paths: {
+      '@vercel/build-utils': ['node_modules/@vercel/build-utils/dist/index.js'],
+      '@vercel/node': ['node_modules/@vercel/node/dist/index.js'],
+      '@vercel/routing-utils': [
+        'node_modules/@vercel/routing-utils/dist/index.js',
+      ],
+      'vercel-node-server': ['node_modules/vercel-node-server/dist/index.js'],
       micro: ['node_modules/micro/lib/index.js'],
     },
     preserveSymlinks: true,

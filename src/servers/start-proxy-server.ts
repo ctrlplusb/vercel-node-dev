@@ -30,6 +30,7 @@ export default async function startProxyServer(
     xfwd: true,
     secure: false,
     ws: true,
+    preserveHeaderKeyCase: true,
   });
 
   apiProxy.on('econnreset', (err, _req, res) => {
