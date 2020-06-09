@@ -61,7 +61,7 @@ const cli = meow(
   );
   const targetSymlinkPath = path.resolve(__dirname, `../targets/${targetName}`);
 
-  createTSConfig({
+  await createTSConfig({
     targetTsConfigPath,
     targetOriginalPath,
     targetSymlinkPath,

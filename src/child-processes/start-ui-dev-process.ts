@@ -32,8 +32,7 @@ export default function startUIDevProcess(
   });
 
   childProcess.catch((err) => {
-    lib.log('Failed to run develop command for UI');
-    console.log(err);
+    lib.log('Failed to run develop command for UI', err);
   });
 
   if (process.env.VND_SILENT_UI == null) {

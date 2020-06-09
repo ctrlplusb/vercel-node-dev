@@ -1,6 +1,7 @@
 import execa from 'execa';
 import { Context } from '../environment/get-context';
 import { Ports } from '../ports';
+import * as lib from '../lib';
 
 export default async function startAPIDevProcess(
   context: Context,
@@ -34,8 +35,7 @@ export default async function startAPIDevProcess(
   );
 
   childProcess.catch((err) => {
-    console.log('API Server failed');
-    console.error(err);
+    lib.log('API Server failed', err);
   });
 
   return { childProcess };
