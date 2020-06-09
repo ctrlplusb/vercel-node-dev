@@ -19,10 +19,10 @@ export default async function startAPIServer(): Promise<void> {
     }
   }
 
-  const apiRoutes = await resolveAPIRoutes(context, true);
-
   const server = createServer(async (req, res) => {
     lib.debug(`API server handling request: ${req.url}`);
+
+    const apiRoutes = await resolveAPIRoutes(context, true);
 
     const resolveResult = apiRoutes.resolve(req);
 

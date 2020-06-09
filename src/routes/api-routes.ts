@@ -5,6 +5,7 @@ import url from 'url';
 import { IncomingMessage } from 'http';
 import prettyFormat from 'pretty-format';
 import dedent from 'dedent';
+import stripColor from 'strip-color';
 import * as lib from '../lib';
 import { Context } from '../environment/get-context';
 
@@ -128,9 +129,9 @@ const resolveRoutes = async (
         handler = (_req, res) => {
           res.status(500).send(dedent`
         There is an error in the following function:
-            - ${p}
-        Error:
-        ${prettyFormat(err)}
+            - ${stripColor(p)}
+
+        ${stripColor(err.stack)}
         `);
         };
       }

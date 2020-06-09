@@ -18,8 +18,6 @@ export default async function startProxyServer(
 ): Promise<http.Server> {
   lib.debug(`Starting proxy server on port ${ports.proxyServer}`);
 
-  const apiRoutes = await resolveAPIRoutes(context, false);
-
   const apiProxy = httpProxy.createProxyServer({
     changeOrigin: true,
     target: {
@@ -100,6 +98,8 @@ export default async function startProxyServer(
     res: http.ServerResponse,
   ) => {
     lib.debug(`Proxy server handling request: ${req.url}`);
+
+    const apiRoutes = await resolveAPIRoutes(context, false);
 
     const routingResult = applyRouting(req, res, context, ports);
 
