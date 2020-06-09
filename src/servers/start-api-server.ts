@@ -1,29 +1,27 @@
-import { Server } from 'http';
 import { createServer } from 'vercel-node-server';
 import util from 'util';
 import execa from 'execa';
-import prettyFormat from 'pretty-format';
 import * as lib from '../lib';
 import { resolveAPIRoutes } from '../routes/api-routes';
 import getContext from '../environment/get-context';
 
-export default async function startAPIServer(): Promise<Server> {
+export default async function startAPIServer(): Promise<void> {
   const context = await getContext();
 
   if (context.packageJson?.scripts?.['now-build'] != null) {
     try {
       lib.log('Executing now-build script');
       await execa('npm', ['run', 'now-build'], {
-        cwd: context.targetRootDir,
+        cwd: context.targetOriginalPath,
       });
     } catch (err) {
       lib.log('Failed to execute now-build script', err);
     }
   }
 
-  const apiRoutes = await resolveAPIRoutes(context);
+  const apiRoutes = await resolveAPIRoutes(context, true);
 
-  const server = createServer((req, res) => {
+  const server = createServer(async (req, res) => {
     lib.debug(`API server handling request: ${req.url}`);
 
     const resolveResult = apiRoutes.resolve(req);
@@ -33,7 +31,7 @@ export default async function startAPIServer(): Promise<Server> {
       case 'not_found':
       case 'invalid': {
         throw new Error(
-          'Invalid state, these should have been handled by the proxy',
+          `Invalid state, these should have been handled by the proxy: ${req.url}`,
         );
       }
       case 'found': {
@@ -42,8 +40,7 @@ export default async function startAPIServer(): Promise<Server> {
           req.query[key] = query[key];
         });
         Promise.resolve(handler(req, res)).catch((err) => {
-          res.status(500);
-          res.send(prettyFormat(err));
+          res.status(500).send(err.stack);
         });
       }
     }
@@ -63,8 +60,6 @@ export default async function startAPIServer(): Promise<Server> {
   const asyncClose = util.promisify(server.close);
 
   lib.bindProcessTermination(() => asyncClose());
-
-  return server;
 }
 
 startAPIServer();

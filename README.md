@@ -210,7 +210,7 @@ The CLI current supports the following options.
 
 ## Specifying a custom develop command
 
-If you aren't using one of the [supported frameworkd](#supported-frameworks), or if you would like to customise the develop command, then you can add a `dev` script to your `package.json`:
+If you aren't using one of the [supported frameworks](#supported-frameworks), or if you would like to customise the develop command, then you can add a `dev` script to your `package.json`:
 
 ```json
 {

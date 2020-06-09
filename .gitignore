@@ -3,4 +3,6 @@
 *.log
 dist
 node_modules
+targets
 temp
+/tsconfig.*.json

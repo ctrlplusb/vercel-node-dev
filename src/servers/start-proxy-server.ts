@@ -4,7 +4,6 @@ import * as lib from '../lib';
 import { Context } from '../environment/get-context';
 import { applyRouting } from '../routes/routing';
 import { resolveAPIRoutes } from '../routes/api-routes';
-
 import {
   writeHeaders,
   writeStatusCode,
@@ -19,7 +18,7 @@ export default async function startProxyServer(
 ): Promise<http.Server> {
   lib.debug(`Starting proxy server on port ${ports.proxyServer}`);
 
-  const apiRoutes = await resolveAPIRoutes(context);
+  const apiRoutes = await resolveAPIRoutes(context, false);
 
   const apiProxy = httpProxy.createProxyServer({
     changeOrigin: true,
@@ -28,6 +27,30 @@ export default async function startProxyServer(
       port: ports.apiServer,
       protocol: 'http',
     },
+    xfwd: true,
+    secure: false,
+    ws: true,
+  });
+
+  apiProxy.on('econnreset', (err, _req, res) => {
+    lib.log('API connection reset', err);
+    res.statusCode = 500;
+    res.end(err.message);
+  });
+
+  apiProxy.on('error', (err, _req, res) => {
+    lib.log('API connection error', err);
+    res.statusCode = 500;
+    res.end(err.message);
+  });
+
+  apiProxy.on('proxyReq', (proxyReq, _req, _res) => {
+    // Browsers may send Origin headers even with same-origin requests. To
+    // prevent CORS issues, we have to change the Origin to match the target URL.
+    if (proxyReq.getHeader('origin')) {
+      proxyReq.setHeader('origin', `http://localhost:${ports.apiServer}`);
+      _res.setHeader('origin', `http://localhost:${ports.apiServer}`);
+    }
   });
 
   const uiProxy = httpProxy.createProxyServer({

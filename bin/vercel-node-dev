@@ -6,6 +6,8 @@
 const meow = require('meow');
 const execa = require('execa');
 const path = require('path');
+const fs = require('fs-extra');
+const createTSConfig = require('./create-tsconfig');
 
 const cli = meow(
   `
@@ -50,38 +52,60 @@ const cli = meow(
   },
 );
 
-const childProcess = execa(
-  path.join(
-    path.dirname(require.resolve('ts-node/package.json')),
-    'dist/bin.js',
-  ),
-  [
-    '--project',
-    path.resolve(__dirname, '../tsconfig.json'),
-    '--transpile-only',
-    path.resolve(__dirname, '../src'),
-  ],
-  {
-    cwd: path.resolve(__dirname, '../'),
-    env: {
-      FORCE_COLOR: '1',
-      VND_DEBUG_APIS: cli.flags.debugApis ? '1' : undefined,
-      VND_DEBUG_APIS_PORT: cli.flags.debugApisPort,
-      VND_PORT: cli.flags.port,
-      VND_TARGET: process.cwd(),
+(async () => {
+  const targetOriginalPath = process.cwd();
+  const targetName = path.basename(process.cwd());
+  const targetTsConfigPath = path.resolve(
+    __dirname,
+    `../tsconfig.${targetName}.json`,
+  );
+  const targetSymlinkPath = path.resolve(__dirname, `../targets/${targetName}`);
+
+  createTSConfig({
+    targetTsConfigPath,
+    targetOriginalPath,
+    targetSymlinkPath,
+  });
+
+  await fs.ensureSymlink(targetOriginalPath, targetSymlinkPath);
+
+  const childProcess = execa(
+    'node',
+    [
+      '-r',
+      'ts-node/register',
+      '--preserve-symlinks',
+      path.resolve(__dirname, '../src'),
+    ],
+    {
+      cwd: path.resolve(__dirname, '../'),
+      env: {
+        FORCE_COLOR: '1',
+        VND_DEBUG_APIS: cli.flags.debugApis ? '1' : undefined,
+        VND_DEBUG_APIS_PORT: cli.flags.debugApisPort,
+        VND_PORT: cli.flags.port,
+        VND_TARGET_ORIGINAL_PATH: targetOriginalPath,
+        VND_TARGET_NAME: targetName,
+        VND_TARGET_TS_CONFIG_PATH: targetTsConfigPath,
+        VND_TARGET_SYM_LINK_PATH: targetSymlinkPath,
+
+        // env vars for ts-node
+        TS_NODE_PROJECT: targetTsConfigPath,
+        TS_NODE_TRANSPILE_ONLY: 'true',
+      },
+      stdio: 'inherit',
     },
-    stdio: 'inherit',
-  },
-);
+  );
 
-childProcess.catch((err) => {
-  console.error(err);
-});
+  childProcess.catch((err) => {
+    console.error(err);
+  });
 
-const dispose = (signal) => {
-  if (childProcess) {
-    childProcess.kill(signal);
-  }
-};
-process.on('SIGINT', dispose);
-process.on('SIGTERM', dispose);
+  const dispose = (signal) => {
+    if (childProcess) {
+      childProcess.kill(signal);
+    }
+  };
+  process.on('SIGINT', dispose);
+  process.on('SIGTERM', dispose);
+})();

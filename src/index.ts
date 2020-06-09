@@ -19,7 +19,7 @@ export async function startVercelNodeDev(): Promise<void> {
   const ports = await getPorts();
 
   // Fire up the API development process
-  if (fs.existsSync(path.join(context.targetRootDir, 'api'))) {
+  if (fs.existsSync(path.join(context.targetSymlinkPath, 'api'))) {
     const apiResult = await startAPIDevProcess(context, ports);
     apiChildProcess = apiResult.childProcess;
     await lib.waitForPortToRespond(ports.apiServer, 60 * 1000);

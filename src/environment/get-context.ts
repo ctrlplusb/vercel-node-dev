@@ -9,13 +9,17 @@ import { Framework } from '../frameworks/frameworks';
 import * as lib from '../lib';
 
 export interface Context {
+  debug: boolean;
   debugApis: boolean;
   debugApisPort: number;
   env: { [key: string]: string };
-  targetRootDir: string;
   framework?: Framework;
-  routes?: Route[];
   packageJson?: PackageJson;
+  routes?: Route[];
+  targetOriginalPath: string;
+  targetName: string;
+  targetTsConfigPath: string;
+  targetSymlinkPath: string;
 }
 
 export interface Ports {
@@ -50,23 +54,34 @@ async function tryGetVercelConfig(
   return undefined;
 }
 
-export default async function getContext(): Promise<Context> {
-  const targetRootDir = process.env.VND_TARGET;
-  if (targetRootDir == null) {
-    throw new Error('Invalid state, expected VND_TARGET to be bound');
+const ensureEnv = (s?: string): string => {
+  if (s == null) {
+    throw new Error('Expected env var to exist');
   }
+  return s;
+};
 
-  const packageJsonPath = path.join(targetRootDir, 'package.json');
+export default async function getContext(): Promise<Context> {
+  const targetOriginalPath = ensureEnv(process.env.VND_TARGET_ORIGINAL_PATH);
+  const targetName = ensureEnv(process.env.VND_TARGET_NAME);
+  const targetTsConfigPath = ensureEnv(process.env.VND_TARGET_TS_CONFIG_PATH);
+  const targetSymlinkPath = ensureEnv(process.env.VND_TARGET_SYM_LINK_PATH);
 
-  const vercelConfig = await tryGetVercelConfig(targetRootDir);
+  const packageJsonPath = path.join(targetOriginalPath, 'package.json');
+
+  const vercelConfig = await tryGetVercelConfig(targetOriginalPath);
 
   const context: Context = {
+    debug: process.env.VND_DEBUG != null,
     debugApis: process.env.VND_DEBUG_APIS != null,
     debugApisPort: process.env.VND_DEBUG_APIS_PORT
       ? parseInt(process.env.VND_DEBUG_APIS_PORT)
       : 9292,
-    env: getEnv(targetRootDir),
-    targetRootDir,
+    env: getEnv(targetOriginalPath),
+    targetOriginalPath,
+    targetName,
+    targetTsConfigPath,
+    targetSymlinkPath,
     packageJson: fs.existsSync(packageJsonPath)
       ? ((await loadJsonFile(packageJsonPath)) as PackageJson)
       : undefined,

@@ -66,7 +66,10 @@ const pathToRegex = (p: string): RegExp => {
   return new RegExp(`^\\/${dirRegexWithSlugs}${filenameRegexWithSlugs}$`);
 };
 
-const resolveRoutes = async (context: Context): Promise<Route[]> => {
+const resolveRoutes = async (
+  context: Context,
+  includeHandlers: boolean,
+): Promise<Route[]> => {
   const routes: Route[] = [];
 
   const globs = [
@@ -83,7 +86,7 @@ const resolveRoutes = async (context: Context): Promise<Route[]> => {
 
   const paths = (
     await globby(globs, {
-      cwd: context.targetRootDir,
+      cwd: context.targetOriginalPath,
     })
   )
     // We will sort so that the paths by length, descending, whilst ensuring all
@@ -108,27 +111,31 @@ const resolveRoutes = async (context: Context): Promise<Route[]> => {
   for (const p of paths) {
     let handler: NowApiHandler;
 
-    try {
-      const mod = await import(`${context.targetRootDir}/${p}`);
+    if (includeHandlers) {
+      try {
+        const mod = await import(`${context.targetSymlinkPath}/${p}`);
 
-      if (typeof mod !== 'object' || typeof mod.default !== 'function') {
-        console.error(
-          `[vercel-node-dev] Serverless function is not being exported from: ${p}`,
-        );
-      }
+        if (typeof mod !== 'object' || typeof mod.default !== 'function') {
+          console.error(
+            `[vercel-node-dev] Serverless function is not being exported from: ${p}`,
+          );
+        }
 
-      handler = mod.default;
-    } catch (err) {
-      lib.log(`Failed to load function "${p}"`, err);
+        handler = mod.default;
+      } catch (err) {
+        lib.log(`Failed to load function "${p}"`, err);
 
-      handler = (_req, res) => {
-        res.status(500).send(dedent`
+        handler = (_req, res) => {
+          res.status(500).send(dedent`
         There is an error in the following function:
             - ${p}
         Error:
         ${prettyFormat(err)}
         `);
-      };
+        };
+      }
+    } else {
+      handler = (_req, res) => res.send(500).send('Route handler not resolved');
     }
 
     routes.push({
@@ -243,7 +250,10 @@ class APIRoutes {
   };
 }
 
-export async function resolveAPIRoutes(context: Context): Promise<APIRoutes> {
-  const routes = await resolveRoutes(context);
+export async function resolveAPIRoutes(
+  context: Context,
+  includeHandlers: boolean,
+): Promise<APIRoutes> {
+  const routes = await resolveRoutes(context, includeHandlers);
   return new APIRoutes(routes);
 }
