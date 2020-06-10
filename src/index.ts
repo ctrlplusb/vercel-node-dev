@@ -7,7 +7,7 @@ import * as lib from './lib';
 import startAPIDevProcess from './child-processes/start-api-dev-process';
 import startUIDevProcess from './child-processes/start-ui-dev-process';
 import startProxyServer from './servers/start-proxy-server';
-import getContext from './environment/get-context';
+import getContext from './get-context';
 import { getPorts } from './ports';
 
 let apiChildProcess: execa.ExecaChildProcess;
@@ -19,7 +19,7 @@ export async function startVercelNodeDev(): Promise<void> {
   const ports = await getPorts();
 
   // Fire up the API development process
-  if (fs.existsSync(path.join(context.targetSymlinkPath, 'api'))) {
+  if (fs.existsSync(path.join(context.targetSymlinkCodePath, 'api'))) {
     const apiResult = await startAPIDevProcess(context, ports);
     apiChildProcess = apiResult.childProcess;
     await lib.waitForPortToRespond(ports.apiServer, 60 * 1000);

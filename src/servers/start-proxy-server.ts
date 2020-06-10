@@ -1,7 +1,7 @@
 import http, { IncomingMessage } from 'http';
 import httpProxy from 'http-proxy';
 import * as lib from '../lib';
-import { Context } from '../environment/get-context';
+import { Context } from '../get-context';
 import { applyRouting } from '../routes/routing';
 import { resolveAPIRoutes } from '../routes/api-routes';
 import {

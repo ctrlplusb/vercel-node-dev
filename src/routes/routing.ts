@@ -1,7 +1,7 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import url, { URL, URLSearchParams } from 'url';
 import * as lib from '../lib';
-import { Context, Ports } from '../environment/get-context';
+import { Context, Ports } from '../get-context';
 
 type RedirectCode = 301 | 302 | 303 | 307 | 308;
 

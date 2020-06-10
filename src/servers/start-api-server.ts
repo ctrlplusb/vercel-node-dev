@@ -3,7 +3,7 @@ import util from 'util';
 import execa from 'execa';
 import * as lib from '../lib';
 import { resolveAPIRoutes } from '../routes/api-routes';
-import getContext from '../environment/get-context';
+import getContext from '../get-context';
 
 export default async function startAPIServer(): Promise<void> {
   const context = await getContext();
@@ -12,7 +12,7 @@ export default async function startAPIServer(): Promise<void> {
     try {
       lib.log('Executing now-build script');
       await execa('npm', ['run', 'now-build'], {
-        cwd: context.targetOriginalPath,
+        cwd: context.targetSymlinkPath,
       });
     } catch (err) {
       lib.log('Failed to execute now-build script', err);

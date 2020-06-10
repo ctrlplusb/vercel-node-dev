@@ -206,6 +206,10 @@ The CLI current supports the following options.
 
   Allows you to specify the port at which the `vercel-node-dev` server will run. By default it will attempt to bind to port `3000`.
 
+- `--root [string]` | `-r [string]`
+
+  Allows you to specify the relative path at which your application code (APIs + UI) live. By default it will be `.`.
+
 <p>&nbsp;</p>
 
 ## Specifying a custom develop command

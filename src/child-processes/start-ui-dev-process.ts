@@ -1,5 +1,5 @@
 import execa from 'execa';
-import { Context } from '../environment/get-context';
+import { Context } from '../get-context';
 import * as lib from '../lib';
 import { Ports } from '../ports';
 
@@ -19,7 +19,7 @@ export default function startUIDevProcess(
 
   // Run the UI script
   const childProcess = execa.command(devCommand, {
-    cwd: context.targetOriginalPath,
+    cwd: context.targetSymlinkCodePath,
     env: {
       ...context.env,
       PORT: ports.uiServer.toString(),

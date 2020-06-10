@@ -19,6 +19,7 @@ const cli = meow(
     --debug-apis-port -o [number]  | Specify the debug port number for API debugger. Default=9229
     --dev-command     -c [string]  | Specify a custom develop command to execute for UI.
     --port            -p [number]  | Specify the port for vercel-node-dev server. Default=3000
+    --root            -r [string]  | Specify the root directory for your app src. Default=.
 
   Examples
     $ vercel-node-dev --debug-apis
@@ -27,6 +28,7 @@ const cli = meow(
     $ vercel-node-dev -d -o 8989
     $ vercel-node-dev -p 1337
     $ vercel-node-dev -c "react-app-rewired start"
+    $ vercel-node-dev --root code
 `,
   {
     flags: {
@@ -47,6 +49,12 @@ const cli = meow(
         default: 3000,
         isRequired: false,
         type: 'number',
+      },
+      root: {
+        alias: 'r',
+        default: './',
+        isRequired: false,
+        type: 'string',
       },
     },
   },
@@ -88,6 +96,7 @@ const cli = meow(
         VND_TARGET_NAME: targetName,
         VND_TARGET_TS_CONFIG_PATH: targetTsConfigPath,
         VND_TARGET_SYM_LINK_PATH: targetSymlinkPath,
+        VND_TARGET_ROOT_PATH: cli.flags.root,
 
         // env vars for ts-node
         TS_NODE_PROJECT: targetTsConfigPath,

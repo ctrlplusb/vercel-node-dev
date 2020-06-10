@@ -1,6 +1,6 @@
 import execa from 'execa';
 import path from 'path';
-import { Context } from '../environment/get-context';
+import { Context } from '../get-context';
 import { Ports } from '../ports';
 import * as lib from '../lib';
 
@@ -17,9 +17,12 @@ export default async function startAPIDevProcess(
       '--transpileOnly',
       '--watch',
       [
-        path.join(context.targetSymlinkPath, 'api'),
+        path.join(context.targetSymlinkCodePath, 'api'),
         path.join(context.targetSymlinkPath, 'vercel.json'),
+        path.join(context.targetSymlinkCodePath, 'package.json'),
+        path.join(context.targetSymlinkCodePath, 'tsconfig.json'),
         path.join(context.targetSymlinkPath, 'package.json'),
+        path.join(context.targetSymlinkPath, 'tsconfig.json'),
       ]
         .map((x) => `"${x}"`)
         .join(','),

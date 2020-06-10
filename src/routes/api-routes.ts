@@ -7,7 +7,7 @@ import prettyFormat from 'pretty-format';
 import dedent from 'dedent';
 import stripColor from 'strip-color';
 import * as lib from '../lib';
-import { Context } from '../environment/get-context';
+import { Context } from '../get-context';
 
 export type Route = {
   filePath: string;
@@ -87,7 +87,7 @@ const resolveRoutes = async (
 
   const paths = (
     await globby(globs, {
-      cwd: context.targetOriginalPath,
+      cwd: context.targetSymlinkCodePath,
     })
   )
     // We will sort so that the paths by length, descending, whilst ensuring all
@@ -114,7 +114,7 @@ const resolveRoutes = async (
 
     if (includeHandlers) {
       try {
-        const mod = await import(`${context.targetSymlinkPath}/${p}`);
+        const mod = await import(`${context.targetSymlinkCodePath}/${p}`);
 
         if (typeof mod !== 'object' || typeof mod.default !== 'function') {
           console.error(

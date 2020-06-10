@@ -4,9 +4,9 @@ import fs from 'fs-extra';
 import { normalizeRoutes, Route } from '@vercel/routing-utils';
 import { PackageJson } from '@vercel/build-utils/dist';
 import loadJsonFile from 'load-json-file';
-import { getFramework } from '../frameworks/get-framework';
-import { Framework } from '../frameworks/frameworks';
-import * as lib from '../lib';
+import { getFramework } from './frameworks/get-framework';
+import { Framework } from './frameworks/frameworks';
+import * as lib from './lib';
 
 export interface Context {
   debug: boolean;
@@ -18,8 +18,10 @@ export interface Context {
   routes?: Route[];
   targetOriginalPath: string;
   targetName: string;
-  targetTsConfigPath: string;
+  targetRootPath: string;
   targetSymlinkPath: string;
+  targetSymlinkCodePath: string;
+  targetTsConfigPath: string;
 }
 
 export interface Ports {
@@ -66,6 +68,7 @@ export default async function getContext(): Promise<Context> {
   const targetName = ensureEnv(process.env.VND_TARGET_NAME);
   const targetTsConfigPath = ensureEnv(process.env.VND_TARGET_TS_CONFIG_PATH);
   const targetSymlinkPath = ensureEnv(process.env.VND_TARGET_SYM_LINK_PATH);
+  const targetRootPath = ensureEnv(process.env.VND_TARGET_ROOT_PATH);
 
   const packageJsonPath = path.join(targetOriginalPath, 'package.json');
 
@@ -81,7 +84,9 @@ export default async function getContext(): Promise<Context> {
     targetOriginalPath,
     targetName,
     targetTsConfigPath,
+    targetRootPath,
     targetSymlinkPath,
+    targetSymlinkCodePath: path.resolve(targetSymlinkPath, targetRootPath),
     packageJson: fs.existsSync(packageJsonPath)
       ? ((await loadJsonFile(packageJsonPath)) as PackageJson)
       : undefined,
