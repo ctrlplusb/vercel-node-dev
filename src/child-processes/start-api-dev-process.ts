@@ -14,7 +14,7 @@ export default async function startAPIDevProcess(
     'ts-node-dev',
     [
       '--respawn',
-      '--transpileOnly',
+      '--transpile-only',
       '--watch',
       [
         path.join(context.targetSymlinkCodePath, 'api'),
