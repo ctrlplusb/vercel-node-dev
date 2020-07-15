@@ -9,7 +9,9 @@ export default function startUIDevProcess(
 ): { childProcess: execa.ExecaChildProcess } {
   // Resolve the development command
   const devCommand =
-    context.packageJson?.scripts?.dev || context.framework?.devCommand;
+    context.devCommand ||
+    context.packageJson?.scripts?.dev ||
+    context.framework?.devCommand;
   if (devCommand == null) {
     throw new Error(
       '[vercel-node-dev] No develop command could be resolved for your project. Please specify one via the "dev" script.',

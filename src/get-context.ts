@@ -12,6 +12,7 @@ export interface Context {
   debug: boolean;
   debugApis: boolean;
   debugApisPort: number;
+  devCommand?: string;
   env: { [key: string]: string };
   framework?: Framework;
   packageJson?: PackageJson;
@@ -80,6 +81,7 @@ export default async function getContext(): Promise<Context> {
     debugApisPort: process.env.VND_DEBUG_APIS_PORT
       ? parseInt(process.env.VND_DEBUG_APIS_PORT)
       : 9292,
+    devCommand: process.env.VND_DEV_COMMAND,
     env: getEnv(targetOriginalPath),
     targetOriginalPath,
     targetName,
