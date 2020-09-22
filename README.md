@@ -1,3 +1,9 @@
+# Deprecated
+
+The Vercel team has done a great job on the latest version of the `vercel dev` server. 💃
+
+---
+
 <h1 align="center">
   🧸
   <br/>
